@@ -1,50 +1,44 @@
 function whoWins(hand1,hand2) {
 
-function displayResult (points1,points2) {
+  var cardsRanking = "123456789JQK";
+  var points1 = 0;
+  var points2 = 0;
+  var i;
 
-  if (points2 > points1) {
-     return ("Player 2 wins "+ points2 +" to "+ points1);
-   } else if (points2 < points1) {
-      return ("Player 1 wins "+ points1 +" to "+ points2);
-   } else {
-    return "Tie";
-  };
-}
+  controlErrors(hand1,hand2);
 
-function controlErrors(hand1,hand2) {
-  if (!hand1 || !hand2) {
-    throw("Error, there are no cards to judge.");
-  } else if (!hand1[0] || !hand2[0]) {
-    throw("Error, there are no cards to judge.");
-  }; 
-}
+  for (i=0 ; i < hand1.length; i++) { 
+    addPoints(hand1[i],hand2[i]);
+    }; 
+  return finalResult(points1,points2);
 
 
-function checkPoints(card1,card2) {
+  function finalResult (points1,points2) {
+    if (points2 > points1) {
+       return ("Player 2 wins "+ points2 +" to "+ points1);
+     } else if (points2 < points1) {
+        return ("Player 1 wins "+ points1 +" to "+ points2);
+     } else {
+      return "Tie";
+    };
+  }
+
+  function controlErrors(hand1,hand2) {
+    if (!hand1 || !hand2) {
+      throw("Error, there are no cards to judge.");
+    } else if (!hand1[0] || !hand2[0]) {
+      throw("Error, there are no cards to judge.");
+    }; 
+  }
+
+
+  function addPoints(card1,card2) {
     if (cardsRanking.indexOf(card2) > cardsRanking.indexOf(card1)) {
       ++points2;
     } else if (cardsRanking.indexOf(card2) < cardsRanking.indexOf(card1)) {
       ++points1;
     }; 
-}
-
-
-
-
-  controlErrors(hand1,hand2);
-
-  var cardsRanking = "123456789JQK";
-
-  var points1 = 0;
-  var points2 = 0;
-  var i;
-
-  for (i=0 ; i < hand1.length; i++) { 
-    checkPoints(hand1[i],hand2[i]);
-    }; 
-  
-
-  return displayResult(points1,points2);
+  }
 
 };
 

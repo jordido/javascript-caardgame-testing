@@ -45,7 +45,7 @@ describe("Numbers", function() {
     expect(str).toEqual("hola");
   });
 
-   context = describe;
+context = describe;
 
 describe("the JavaScript language", function(){
 
@@ -85,6 +85,91 @@ describe("the JavaScript language", function(){
 
         expect(obj).toEqual({ name: "Emily" });
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     it("modifies the properties of an array when it is passed in to a function", function(){
         array = [1, 2, 3];
