@@ -11,14 +11,14 @@ function whoWins(hand) {
   }
 
   for (i=0 ; i < hand[0].length; i++) { 
-    gamearray=buildGame(i);
+    gamearray=buildRound(i);
     addPoints(gamearray);
     console.log(points);
     }; 
 
   return finalResult(points);
 
-  function buildGame(g) {
+  function buildRound(g) {
     game = [];
     for (j=0; j < hand.length; j++) {
       game.push(hand[j][g]);
@@ -42,7 +42,11 @@ function whoWins(hand) {
     for (i=0; i<hand.length; i++) {
       if (!(hand[i] instanceof Array) || !hand[i] || (hand[i].length == 0)) {
         throw("Error, there are no cards to judge.");
-      };
+      } else {
+        if (hand[i].length != hand[0].length) {
+          throw("Error, different number of cards for players.");
+        }
+      }
 
     };
   }
@@ -86,10 +90,16 @@ describe("Game of Cards", function() {
     expect(whoWins([['2','3'],['1','2']])).toEqual("Players: 1=>2 points 2=>0 points ");
   });
 
-  it("wins with three players", function(){
+  it("wins with three players and 1 card", function(){
     expect(whoWins([['1'],['Q'],['1']])).toEqual("Players: 1=>0 points 2=>1 points 3=>0 points ");
     expect(whoWins([['K'],['Q'],['1']])).toEqual("Players: 1=>1 points 2=>0 points 3=>0 points ");
     expect(whoWins([['1'],['2'],['K']])).toEqual("Players: 1=>0 points 2=>0 points 3=>1 points ");
+  });
+
+  it("wins with three players and 2 cards", function(){
+    expect(whoWins([['1','J'],['Q','K'],['1','10']])).toEqual("Players: 1=>0 points 2=>2 points 3=>0 points ");
+    expect(whoWins([['K','10'],['Q','10'],['1','10']])).toEqual("Players: 1=>1 points 2=>0 points 3=>0 points ");
+    expect(whoWins([['10','1'],['2','5'],['9','K']])).toEqual("Players: 1=>1 points 2=>0 points 3=>1 points ");
   });
 
   it('Should return an error if there are no cards in the hands', function(){
@@ -98,5 +108,8 @@ describe("Game of Cards", function() {
     expect(function(){whoWins(null,null)}).toThrow('Error, there are no cards to judge.');
   });
 
+  it('Should return an error if there are no uqual number of cards for players', function(){
+    expect(function(){whoWins([['1'],['1','2']])}).toThrow("Error, different number of cards for players.");
+    expect(function(){whoWins([['1'],[]])}).toThrow("Error, different number of cards for players.");
+  });
 });
-
