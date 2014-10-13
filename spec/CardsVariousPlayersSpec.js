@@ -6,25 +6,29 @@ function whoWins(hand) {
 
   controlErrors(hand);
 
-  for (i=0; i<hand.length; i++) {
-    points.push(0);
-  }
+  var numberofplayers = hand.length;
+  var numberofrounds = hand[0].length;
 
-  for (i=0 ; i < hand[0].length; i++) { 
-    gamearray=buildRound(i);
-    addPoints(gamearray);
-    console.log(points);
-    }; 
+  initializeArrayOfPoints();
+
+  for (r=0 ; r < numberofrounds; r++) { 
+    addPointsToWinner(buildRound(r));
+  }; 
 
   return finalResult(points);
 
-  function buildRound(g) {
-    game = [];
-    for (j=0; j < hand.length; j++) {
-      game.push(hand[j][g]);
+  function initializeArrayOfPoints() {
+    for (i=0; i<numberofplayers; i++) {
+      points.push(0);
     }
-    console.log(game);
-    return game;
+  }
+
+  function buildRound(round) {
+    cardsinround = [];
+    for (player=0; player < numberofplayers; player++) {
+      cardsinround.push(hand[player][round]);
+    }
+    return cardsinround;
   }
 
   function finalResult(points) {
@@ -33,6 +37,20 @@ function whoWins(hand) {
       stringResult += (i+1) + "=>"+ points[i] + " points ";
     }
     return stringResult;
+  }
+
+  function addPointsToWinner(cards) {
+    var max = 0;
+    for (i=1; (i < (cards.length)); i++) {
+      if (cardsRanking.indexOf(cards[i]) == cardsRanking.indexOf(cards[max])){
+        return;
+      } else {
+          if (cardsRanking.indexOf(cards[i]) > cardsRanking.indexOf(cards[max])){
+          max = i;
+          }
+      }
+    }
+    ++points[max];  
   }
 
   function controlErrors(hand) {
@@ -45,27 +63,17 @@ function whoWins(hand) {
       } else {
         if (hand[i].length != hand[0].length) {
           throw("Error, different number of cards for players.");
+        } else {
+          for (c=0; c < hand[i].length; c++) {
+            if (cardsRanking.indexOf(hand[i][c]) == -1) 
+              {throw("Error, Incorrect card in hand");}
+          }
         }
       }
-
-    };
-  }
-
-  function addPoints(cards) {
-    var i;
-    var max = 0;
-    for (i=1; (i < (cards.length)); i++) {
-      if (cardsRanking.indexOf(cards[i]) == cardsRanking.indexOf(cards[max])){
-        return;
-      } else {
-       if (cardsRanking.indexOf(cards[i]) > cardsRanking.indexOf(cards[max])){
-         max = i;
-      }
-      }
     }
-    ++points[max];  
   }
 };
+
 
 
 describe("Game of Cards", function() {
@@ -97,19 +105,23 @@ describe("Game of Cards", function() {
   });
 
   it("wins with three players and 2 cards", function(){
-    expect(whoWins([['1','J'],['Q','K'],['1','10']])).toEqual("Players: 1=>0 points 2=>2 points 3=>0 points ");
-    expect(whoWins([['K','10'],['Q','10'],['1','10']])).toEqual("Players: 1=>1 points 2=>0 points 3=>0 points ");
-    expect(whoWins([['10','1'],['2','5'],['9','K']])).toEqual("Players: 1=>1 points 2=>0 points 3=>1 points ");
+    expect(whoWins([['1','J'],['Q','K'],['1','9']])).toEqual("Players: 1=>0 points 2=>2 points 3=>0 points ");
+    expect(whoWins([['K','9'],['Q','9'],['1','9']])).toEqual("Players: 1=>1 points 2=>0 points 3=>0 points ");
+    expect(whoWins([['9','1'],['2','5'],['8','K']])).toEqual("Players: 1=>1 points 2=>0 points 3=>1 points ");
   });
 
   it('Should return an error if there are no cards in the hands', function(){
     expect(function(){whoWins()}).toThrow('Error, there are no cards to judge.');
     expect(function(){whoWins([],[])}).toThrow('Error, there are no cards to judge.');
     expect(function(){whoWins(null,null)}).toThrow('Error, there are no cards to judge.');
+    expect(function(){whoWins([['1'],[]])}).toThrow('Error, there are no cards to judge.');
   });
 
   it('Should return an error if there are no uqual number of cards for players', function(){
-    expect(function(){whoWins([['1'],['1','2']])}).toThrow("Error, different number of cards for players.");
-    expect(function(){whoWins([['1'],[]])}).toThrow("Error, different number of cards for players.");
+    expect(function(){whoWins([['1'],['1','2']])}).toThrow("Error, different number of cards for players."); 
+  });
+
+  it('Should return an error when one card is not correct', function(){
+    expect(function(){whoWins([['1','K'],['10','2']])}).toThrow("Error, Incorrect card in hand"); 
   });
 });
